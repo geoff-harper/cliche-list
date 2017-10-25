@@ -3,8 +3,8 @@
     <input
       v-model="newClicheText"
       @keyup.enter="emitCliche"
-      @click="newClicheText = ''"
-      class="cliche-input"
+      @click="newClicheText = '', hasError = false"
+      :class="['cliche-input', hasError ? 'error' : '']"
       type="text"
       placeholder="">
     <button @click="emitCliche" class="cliche-add">Add Cliché</button>
@@ -15,13 +15,20 @@
 export default {
   data() {
     return {
-      newClicheText: 'Tell everyone what I think about Breaking Bad'
+      newClicheText: 'Tell everyone what I think about Breaking Bad',
+      hasError: false
     }
   },
   methods: {
     emitCliche() {
-      this.$emit('add', this.newClicheText);
-      this.newClicheText = '';
+      if(this.newClicheText === '') {
+        this.newClicheText = 'Submitting without typing anything is so cliché';
+        this.hasError = true;
+      } else {
+        this.hasError = false;
+        this.$emit('add', this.newClicheText);
+        this.newClicheText = '';
+      }
     }
   }
 }
@@ -44,6 +51,11 @@ export default {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid rgba(0, 0, 0, 0.35);
   color: #495057;
+}
+
+.cliche-input.error {
+  color: #f03e3e;
+  font-style: italic;
 }
 
 .cliche-add {
